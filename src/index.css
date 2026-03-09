@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Falls du globale Standard-Styles willst, nutze Tailwind-Klassen */
+@layer base {
+  body {
+    @apply bg-gray-50 text-slate-900 m-0 p-0;
+  }
+}
