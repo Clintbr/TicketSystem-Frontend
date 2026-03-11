@@ -28,13 +28,13 @@ const Footer = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <a href="#" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
+                        <a href="https://github.com/Clintbr" target={"_blank"} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
                             <Github size={18} />
                         </a>
-                        <a href="#" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
+                        <a href="https://clintbr.github.io/mein_Portfolio/kontakt.html" target={"_blank"} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
                             <Mail size={18} />
                         </a>
-                        <a href="#" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
+                        <a href="https://clintbr.github.io/mein_Portfolio/" target={"_blank"} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
                             <Globe size={18} />
                         </a>
                     </div>
