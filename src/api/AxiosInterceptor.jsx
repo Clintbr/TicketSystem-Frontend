@@ -17,8 +17,8 @@ const AxiosInterceptor = ({ children }) => {
                 setIsModalOpen(true);
                 return Promise.reject(new Error("Sitzung abgelaufen"));
             }
-            const errorMessage = error.response?.data?.message || 'Ein unerwarteter Fehler ist aufgetreten';
-
+            const backendMessage = error.response?.data?.message.toString() || 'Ein unerwarteter Fehler ist aufgetreten';
+            const errorMessage = (backendMessage.includes('JDBC') || backendMessage.includes('?')) ? 'Unerwarteter Fehler beim Server' : backendMessage;
             return Promise.reject(new Error(errorMessage));
         };
 
