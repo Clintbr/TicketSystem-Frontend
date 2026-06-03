@@ -1,6 +1,6 @@
 Über diese Ticket-Plattform:
 - Diese App ermöglicht die Bearbeitung von Clients Störungen durch blitzschnelle Kommunikation über Threads.
-- Um ein Ticket zu erstellen, muss der Nutzer eingeloggt sein und entweder auf Startseite auf "jetzt Ticket erstellen" oder auf der Seite "Meine Tickets" auf "Neues Tickets" oben rechts klicken. Dort gibt es einen Button "Neues Ticket anlegen".
+- Um ein Ticket zu erstellen, muss der Nutzer eingeloggt sein und entweder auf Startseite auf "Jetzt Ticket erstellen" oder auf der Seite "Meine Tickets" auf "Neues Tickets" oben rechts klicken. Dort gibt es einen Button "Neues Ticket anlegen".
 - Die Bearbeitung eines Tickets dauert in der Regel zwischen 24 und 48 Stunden, je nach Priorität.
 - Support-Mitarbeiter finden ihre zugewiesenen Tickets unter dem Reiter "Support Dashboard".
 - Admins können Statistiken im Bereich "Administration" einsehen.
