@@ -1,16 +1,50 @@
-# React + Vite
+# Ticket Platform - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend of the Ticket Platform, a modern Single Page Application (SPA) designed for managing support tickets. It features real-time role-based routing (User, Support, Admin) and an integrated AI Support Assistant powered by Google Gemini.
 
-Currently, two official plugins are available:
+> ℹ️ **Note:** This repository only contains the frontend code. The backend application is hosted in a separate repository. You can find it here: **[[Link to Backend Repo](https://github.com/Clintbr/TicketSystem-backend)]**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tech Stack
 
-## React Compiler
+* **Framework:** React (Vite)
+* **Routing:** React Router DOM (with clean browser URLs and `_redirects` fallback for static hosting)
+* **Styling:** Tailwind CSS
+* **API Client:** Axios
+* **AI Integration:** Google Generative AI SDK (Gemini 1.5 Flash)
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🛠️ Setup & Installation
 
-## Expanding the ESLint configuration
+1. **Clone the repository:**
+```bash
+git clone https://github.com/Clintbr/TicketSystem-backend.git
+cd TicketSystem-backend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+
+
+2. **Install dependencies:**
+```bash
+npm install
+
+```
+
+
+3. **Configure Environment Variables:**
+Create a `.env` file in the root directory and add your Google Gemini API key:
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+
+```
+
+
+4. **Run the application locally:**
+```bash
+npm run dev
+
+```
+
+
+
+## 🌐 Deployment
+
+The frontend is optimized for static site hosting and is deployed on **Netlify**. It includes a `public/_redirects` configuration file to ensure seamless page reloads without breaking the client-side routing.
