@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Footer from "./Footer.jsx";
+import ChatBot from "../common/ChatBot.jsx";
 
 const MainLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -30,6 +31,7 @@ const MainLayout = () => {
                             <Outlet />
                         </div>
                     </div>
+                    <ChatBot />
                     <Footer />
                 </main>
             </div>
