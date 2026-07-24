@@ -1,6 +1,6 @@
 # Ticket Platform - Frontend
 
-This is the frontend of the Ticket Platform, a modern Single Page Application (SPA) designed for managing support tickets. It features real-time role-based routing (User, Support, Admin) and an integrated AI Support Assistant powered by Google Gemini.
+This is the frontend of the Ticket Platform, a modern Application designed for managing support tickets. It features real-time role-based routing (User, Support, Admin) and an integrated AI Support Assistant powered by Google Gemini.
 
 > ℹ️ **Note:** This repository only contains the frontend code. The backend application is hosted in a separate repository. You can find it here: **[[Link to Backend Repo](https://github.com/Clintbr/TicketSystem-backend)]**.
 
