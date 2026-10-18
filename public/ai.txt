@@ -1,7 +1,257 @@
-Über diese Ticket-Plattform:
-- Diese App ermöglicht die Bearbeitung von Clients Störungen durch blitzschnelle Kommunikation über Threads.
-- Um ein Ticket zu erstellen, muss der Nutzer eingeloggt sein und entweder auf Startseite auf "Jetzt Ticket erstellen" oder auf der Seite "Meine Tickets" auf "Neues Tickets" oben rechts klicken. Dort gibt es einen Button "Neues Ticket anlegen".
-- Die Bearbeitung eines Tickets dauert in der Regel zwischen 24 und 48 Stunden, je nach Priorität.
-- Support-Mitarbeiter finden ihre zugewiesenen Tickets unter dem Reiter "Support Dashboard".
-- Admins können Statistiken im Bereich "Administration" einsehen.
-- SupportTeam können die Tickets verwalten und bearbeiten im Bereich "Support Board" einsehen.
+===================================================
+TICKETSYSTEM – VOLLSTÄNDIGE WISSENSBASIS FÜR DEN KI-SUPPORT-ASSISTENTEN
+===================================================
+
+ALLGEMEINE BESCHREIBUNG
+-----------------------
+Das TicketSystem ist eine moderne Web-Applikation für professionelles Support-Management.
+Nutzer können Störungen und Anfragen als Tickets erfassen. Support-Mitarbeiter und Admins
+bearbeiten diese Tickets in Echtzeit über ein Thread-basiertes Kommentarsystem.
+Die App ist auf Deutsch und richtet sich an Unternehmen und deren Kunden.
+
+TECHNOLOGIE (für technisch versierte Nutzer)
+--------------------------------------------
+- Frontend: React 19 mit Vite (JavaScript/JSX)
+- Styling: Tailwind CSS 4
+- Routing: React Router DOM 7
+- HTTP-Kommunikation: Axios (mit JWT Bearer Token im Header)
+- KI-Chatbot: Google Gemini API (@google/genai)
+- Drag & Drop (Admin): @hello-pangea/dnd
+- Diagramme (Admin Statistiken): Recharts
+- Backend-API: https://ticketsystem-backend-az2v.onrender.com/api
+
+===================================================
+BENUTZERROLLEN
+===================================================
+
+Es gibt drei Rollen im System:
+
+1. USER (normaler Nutzer / Kunde)
+   - Kann sich registrieren und anmelden
+   - Kann eigene Tickets erstellen, einsehen und löschen
+   - Kann in einem Ticket-Thread Kommentare schreiben und eigene Kommentare löschen
+   - Kann ein eigenes Ticket als „erledigt" (CLOSED) markieren
+   - Sieht nur seine eigenen Tickets unter „Meine Tickets" (/tickets)
+
+2. SUPPORT (Support-Mitarbeiter)
+   - Hat alle Rechte eines normalen Nutzers
+   - Sieht ALLE Tickets aller Nutzer im „Support Board" → „Alle Tickets" (/support)
+   - Kann Tickets selbst übernehmen (zuweisen) und wieder freigeben
+   - Sieht seine eigenen zugewiesenen Tickets unter „Mir zugewiesen" (/support/assigned)
+   - Kann Kommentare in jedem Ticket schreiben
+
+3. ADMIN (Administrator)
+   - Hat alle Rechte von SUPPORT und USER
+   - Kann zusätzlich Ticket-Prioritäten direkt im Support-Board ändern
+   - Hat Zugriff auf die Benutzerverwaltung (/admin/users): Rollen ändern (Drag & Drop auf Desktop, Buttons auf Mobile), Nutzer löschen
+   - Hat Zugriff auf System-Statistiken (/admin/stats): Gesamtnutzer, offene/geschlossene/gesamte Tickets, Ticketaufkommen im Zeitverlauf (Diagramm), Lösungsquote
+
+===================================================
+SEITEN UND NAVIGATION (Sidebar)
+===================================================
+
+Die Navigation befindet sich in einer Sidebar (links, dunkel/slate-900). Auf mobilen Geräten
+kann die Sidebar über einen Burger-Menü-Button in der Navbar oben geöffnet werden.
+
+HAUPTNAVIGATION (sichtbar für alle eingeloggten Nutzer):
+  - Startseite → /
+  - Meine Tickets → /tickets  (nur für eingeloggte Nutzer)
+
+SUPPORT BOARD (nur für SUPPORT- und ADMIN-Rollen):
+  - Alle Tickets → /support
+  - Mir zugewiesen → /support/assigned
+
+ADMINISTRATION (nur für ADMIN-Rolle):
+  - Benutzerverwaltung → /admin/users
+  - System-Status → /admin/stats
+
+Nicht eingeloggte Nutzer sehen unten in der Sidebar die Buttons „Anmelden" und „Registrieren".
+Eingeloggte Nutzer sehen ihre E-Mail-Adresse, ihre Rolle und einen „Abmelden"-Button.
+
+===================================================
+SEITE: STARTSEITE (/)
+===================================================
+- Öffentlich zugänglich (kein Login nötig)
+- Zeigt eine Hero-Section mit dem Titel „Support-Management neu gedacht."
+- Zwei Buttons: „Jetzt Ticket erstellen" (führt zu /tickets) und „Konto erstellen" (führt zu /register)
+- Feature-Übersicht mit drei Karten:
+  1. Automatische Zuweisung – Tickets werden sofort dem nächsten verfügbaren Support-Mitarbeiter zugewiesen
+  2. Echtzeit-Diskussion – Kommunikation direkt im Thread, alle Updates an einem Ort
+  3. Admin Dashboard – Volle Kontrolle für Admins: User-Management, Rollenzuweisung, Systemübersicht
+
+===================================================
+SEITE: ANMELDEN (/login)
+===================================================
+- Erreichbar für nicht eingeloggte Nutzer (eingeloggte Nutzer werden zur Startseite weitergeleitet)
+- Felder: E-Mail-Adresse, Passwort
+- Validierung: Passwort mindestens 6 Zeichen, gültige E-Mail-Format
+- Bei Erfolg: JWT-Token und Nutzerdaten werden im localStorage gespeichert, Weiterleitung zur Startseite
+- Link zur Registrierung vorhanden
+
+===================================================
+SEITE: REGISTRIEREN (/register)
+===================================================
+- Erreichbar für nicht eingeloggte Nutzer (eingeloggte Nutzer werden zur Startseite weitergeleitet)
+- Neue Nutzer registrieren sich mit E-Mail, Benutzername und Passwort
+- Nach Registrierung kann man sich anmelden
+- Standardrolle nach Registrierung: USER
+
+===================================================
+SEITE: MEINE TICKETS (/tickets)
+===================================================
+- Nur für eingeloggte Nutzer (alle Rollen)
+- Zeigt alle Tickets, die der eingeloggte Nutzer selbst erstellt hat
+- Oben rechts: Button „+ Neues Ticket" öffnet ein Modal zum Erstellen
+- Jedes Ticket zeigt: Titel, kurze Beschreibung, Erstellungsdatum, Status-Badge
+- Aktionen pro Ticket:
+  - „Details anzeigen" → navigiert zur Ticket-Detail-Seite (/tickets/:id)
+  - Löschen-Button (Papierkorb-Icon) → löscht das Ticket dauerhaft nach Bestätigung
+- Status-Anzeige mit Farben:
+  - OPEN = blau
+  - IN_PROGRESS = gelb/amber
+  - CLOSED = grün/emerald
+
+TICKET ERSTELLEN (Modal):
+- Felder: Titel / Betreff (mind. 5 Zeichen), Beschreibung (Pflichtfeld)
+- Button „Ticket absenden" sendet das Ticket an das Backend
+- Nach Erstellung erscheint das neue Ticket sofort oben in der Liste
+
+===================================================
+SEITE: TICKET DETAILS (/tickets/:id)
+===================================================
+- Für alle eingeloggten Nutzer zugänglich (sofern der Nutzer Zugriff auf das Ticket hat)
+- Zeigt die vollständigen Ticket-Informationen:
+  - Ticket-ID (gekürzt), Titel, Priorität (Badge), Status (Badge), Beschreibung
+  - Ersteller-Name und Erstellungsdatum
+- Button „Ticket schließen" (sichtbar, solange Status nicht CLOSED): markiert das Ticket als erledigt
+- DISKUSSIONSVERLAUF / THREAD:
+  - Alle Kommentare werden als Chat-Blasen angezeigt
+  - Eigene Kommentare erscheinen rechts (blau), fremde Kommentare links (weiß)
+  - Eigene Kommentare können über einen roten Button (X) gelöscht werden
+  - Jeder Kommentar zeigt Autorenname und Uhrzeit
+- KOMMENTAR SENDEN:
+  - Eingabefeld am unteren Rand (sticky), Textarea + „Senden"-Button
+  - Bei geschlossenem Ticket (CLOSED) ist das Eingabefeld nicht mehr sichtbar → Hinweis: „Es können keine weiteren Kommentare hinzugefügt werden."
+- Zurück-Link oben links: „← Zurück zur Übersicht"
+
+TICKET-PRIORITÄTEN:
+  - LOW = grau
+  - MEDIUM = blau
+  - HIGH = orange
+  - URGENT = rot, pulsierend animiert
+
+TICKET-STATUS:
+  - OPEN = offen (blau)
+  - IN_PROGRESS = in Bearbeitung (amber/gelb)
+  - CLOSED = geschlossen (grau/grün)
+
+===================================================
+SEITE: SUPPORT BOARD – ALLE TICKETS (/support)
+===================================================
+- Nur für SUPPORT- und ADMIN-Rollen
+- Zeigt ALLE Tickets aller Nutzer in einer Tabellenansicht (Desktop) oder Kartenansicht (Mobile)
+- Filter: Suchfeld (Titel oder Nutzername), Statusfilter (Alle / Offen / In Bearbeitung / Geschlossen)
+- Tabellenspalten (Desktop): Priorität, Ticket/ID, Kunde, Status, Aktionen
+- Aktionen:
+  - „Öffnen" → navigiert zur Ticket-Detail-Seite (nur für nicht zugewiesene, offene Tickets)
+  - „Übernehmen" → weist das Ticket dem eingeloggten Support-Mitarbeiter zu
+- Priorität:
+  - ADMIN sieht ein Dropdown-Menü zur Prioritätsänderung direkt in der Tabelle
+  - SUPPORT-Nutzer sehen nur den Prioritäts-Badge (kein Ändern möglich)
+
+===================================================
+SEITE: SUPPORT BOARD – MIR ZUGEWIESEN (/support/assigned)
+===================================================
+- Nur für SUPPORT- und ADMIN-Rollen
+- Zeigt nur die Tickets, die dem eingeloggten Nutzer zugewiesen sind
+- Aktionen pro Ticket: „Freigeben" → hebt die Zuweisung auf (Ticket wird wieder verfügbar)
+- Gleiche Filter wie „Alle Tickets" (Suche + Status)
+- Titel dieser Ansicht: „Meine Aufgaben"
+
+===================================================
+SEITE: BENUTZERVERWALTUNG (/admin/users)
+===================================================
+- Nur für ADMIN-Rolle
+- Zeigt alle registrierten Nutzer des Systems
+- Suchfeld zum Filtern nach E-Mail oder Benutzername
+- DESKTOP-ANSICHT: Drag & Drop – Nutzer-Karten können zwischen drei Spalten (USER, SUPPORT, ADMIN) gezogen werden, um die Rolle zu ändern. Beim Ziehen dreht sich die Karte leicht und hebt sich hervor.
+- MOBILE-ANSICHT: Rollenwechsel über drei Buttons (USER / SUPPORT / ADMIN) pro Nutzer
+- Löschen: Nutzer können dauerhaft gelöscht werden (Bestätigungsabfrage)
+
+===================================================
+SEITE: SYSTEM-STATISTIKEN (/admin/stats)
+===================================================
+- Nur für ADMIN-Rolle
+- 4 Statistik-Kacheln: Gesamtnutzer, Offene Tickets, Gelöste Tickets, Tickets gesamt
+- Diagramm: Ticketaufkommen im Zeitverlauf (Flächen-Diagramm / AreaChart)
+- Effizienz-Check: Lösungsquote in Prozent mit animiertem Fortschrittsbalken
+  (Verhältnis: geschlossene Tickets / Gesamttickets × 100)
+
+===================================================
+KI-CHATBOT (Support-Assistent)
+===================================================
+- Erscheint als schwebendes Chat-Icon unten rechts auf allen Seiten
+- Powered by Google Gemini AI
+- Klick auf das Icon öffnet ein Chat-Fenster (450px hoch, 320/384px breit)
+- Begrüßungsnachricht: „Hallo! Ich bin dein Support-Assistent. Wie kann ich dir heute helfen?"
+- Der Chatbot beantwortet Fragen AUSSCHLIESSLICH auf Basis der Informationen in dieser Datei (ai.txt)
+- Bei unbekannten Fragen antwortet er höflich, dass er die Antwort nicht kennt
+- Eingabe über Textfeld + „Senden"-Button oder Enter-Taste
+- Ladeanzeige: Drei animierte Punkte (●●●) während die KI antwortet
+
+===================================================
+AUTHENTIFIZIERUNG & SITZUNGSVERWALTUNG
+===================================================
+- JWT-basierte Authentifizierung (Bearer Token)
+- Token und Nutzerdaten werden im localStorage des Browsers gespeichert
+- Bei erneutem Aufruf der Seite wird der gespeicherte Token automatisch geladen
+- Wenn ein Token abläuft, erscheint ein Modal: „Sitzung abgelaufen" → Button führt zur Login-Seite
+- Abmelden: Löscht Token und Nutzerdaten aus localStorage, leitet zur Startseite weiter
+- Nicht eingeloggte Nutzer werden automatisch zur Login-Seite weitergeleitet, wenn sie geschützte Seiten aufrufen
+- Bereits eingeloggte Nutzer werden von der Login-/Registrierungs-Seite zur Startseite weitergeleitet
+
+===================================================
+HÄUFIGE NUTZERFRAGEN & ANTWORTEN
+===================================================
+
+F: Wie erstelle ich ein Ticket?
+A: Du musst eingeloggt sein. Klicke auf „Meine Tickets" in der Sidebar, dann oben rechts auf „+ Neues Ticket". Fülle Titel (mind. 5 Zeichen) und Beschreibung aus und klicke auf „Ticket absenden".
+
+F: Wie lange dauert die Bearbeitung eines Tickets?
+A: Die Bearbeitung dauert in der Regel zwischen 24 und 48 Stunden, je nach Priorität des Tickets. Dringende Tickets (Priorität URGENT) werden bevorzugt behandelt.
+
+F: Kann ich ein Ticket löschen?
+A: Ja. Gehe zu „Meine Tickets", klicke auf das Papierkorb-Icon neben dem Ticket und bestätige die Löschung.
+
+F: Wie schließe ich ein Ticket?
+A: Öffne die Ticket-Details (über „Details anzeigen"), dann klicke oben auf „Ticket schließen" und bestätige die Aktion.
+
+F: Warum kann ich keine Kommentare mehr schreiben?
+A: Wenn ein Ticket den Status CLOSED hat, können keine weiteren Kommentare hinzugefügt werden.
+
+F: Wie kann ich meinen Kommentar löschen?
+A: Auf der Ticket-Details-Seite erscheint bei eigenen Kommentaren ein roter Löschen-Button. Klicke darauf und bestätige die Löschung.
+
+F: Was bedeuten die Ticket-Prioritäten?
+A: LOW = niedrig (grau), MEDIUM = mittel (blau), HIGH = hoch (orange), URGENT = dringend (rot, animiert). Prioritäten können nur von Admins geändert werden.
+
+F: Was bedeuten die Status-Farben?
+A: OPEN = blau (offen), IN_PROGRESS = gelb (in Bearbeitung), CLOSED = grün/grau (geschlossen/erledigt).
+
+F: Wie kann ich mein Passwort zurücksetzen?
+A: Eine automatische Passwort-Zurücksetzen-Funktion ist derzeit nicht verfügbar. Bitte wende dich an einen Administrator.
+
+F: Wie wird mir ein Ticket zugewiesen?
+A: Support-Mitarbeiter können Tickets im Support Board selbst übernehmen (Button „Übernehmen"). Es gibt auch eine automatische Zuweisung.
+
+F: Wie kann ein Admin meine Rolle ändern?
+A: Ein Administrator kann über die Benutzerverwaltung (/admin/users) die Rollen aller Nutzer ändern – auf Desktop per Drag & Drop, auf Mobile über Buttons.
+
+F: Was ist der Unterschied zwischen „Alle Tickets" und „Mir zugewiesen"?
+A: „Alle Tickets" (/support) zeigt alle offenen Tickets aller Nutzer. „Mir zugewiesen" (/support/assigned) zeigt nur die Tickets, die du persönlich übernommen hast.
+
+F: Wie registriere ich mich?
+A: Klicke in der Sidebar auf „Registrieren" oder auf der Startseite auf „Konto erstellen". Gib E-Mail, Benutzername und Passwort ein. Nach Registrierung kannst du dich anmelden.
+
+F: Was passiert, wenn meine Sitzung abläuft?
+A: Du siehst ein Modal mit dem Hinweis „Sitzung abgelaufen". Klicke auf den Button, um zur Login-Seite zu gelangen und dich erneut anzumelden.
