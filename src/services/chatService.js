@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY});
 export const askBot = async (userMessage) => {
     try {
         // 1. Lade die info.txt aus dem public-Ordner
-        const response = await fetch('/bot-info.txt');
+        const response = await fetch('/ai.txt');
         const siteContext = await response.text();
 
         // 2. Gemini 1.5 Flash aufrufen (das schnellste und kostenlose Modell)
